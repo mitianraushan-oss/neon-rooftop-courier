@@ -21,7 +21,7 @@
 - [x] M2 - player controller (coyote, buffer, slide, wall-run, grapple, mantle), camera, collision
 - [x] M3 - deliveries, HUD, minimap, pickups, checkpoints, 5 levels, autopilot bot + Playwright test
 - [x] M4 - patrol + sniper drones, WARDEN-9 boss chase
-- [ ] M5 - touch + gamepad, adaptive quality, juice pass, README
+- [x] M5 - touch + gamepad, adaptive quality, juice pass (hit-stop, shake, rings, trail, speed lines, count-up tallies), README
 
 ## Testing
 - `node tools/test.mjs` drives headless Chromium: menus on desktop / mobile landscape /
@@ -32,5 +32,17 @@
   proximity based, billboards only); billboard walls could sit across the arrival lane (walls
   now always run parallel to the way you arrive); special links chained back to back.
 
-## Known issues
-- Visual tuning and time budgets still rough (M5).
+## Balance
+- Time budgets are roughly 2x the autopilot's clear time per delivery leg (the bot plays a
+  near-perfect line). Level 1 is the most lenient.
+- Combo multiplier: +0.5 per 8 chained events, capped at x4, resets after 4.5 s idle or any hit.
+
+## Known issues / not done
+- Tested only in headless Chromium (desktop + emulated phone viewports, 60 fps on Apple
+  silicon at High). Not hand-tested on a physical phone, Safari, Firefox or a real gamepad.
+- The game has not been played by a human hand in this session - feel and difficulty are
+  tuned from the bot and from reasoning about the movement constants, so expect to want tweaks.
+- Drones and the boss fly through geometry (no collision for enemies).
+- Wall-run works on the neon billboards only, not on arbitrary building sides.
+- CJK neon signs depend on the device having a Japanese font; otherwise they show boxes.
+- No remote was configured in this repo, so commits are local only (see README for Pages).

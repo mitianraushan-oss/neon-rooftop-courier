@@ -17,10 +17,10 @@ export class Drones {
       body: new THREE.SphereGeometry(0.42, 14, 10),
       eye: new THREE.SphereGeometry(0.16, 10, 8),
       ring: new THREE.TorusGeometry(0.66, 0.05, 6, 20),
-      cone: new THREE.ConeGeometry(5.5, 13, 20, 1, true),
+      cone: new THREE.ConeGeometry(3.6, 10, 20, 1, true),
       beam: new THREE.CylinderGeometry(0.05, 0.05, 1, 6),
     };
-    this.geo.cone.translate(0, -6.5, 0);
+    this.geo.cone.translate(0, -5, 0);
     this.geo.cone.rotateX(-Math.PI / 2); // apex at origin, opening toward +Z
     this.bodyMat = new THREE.MeshStandardMaterial({ color: 0x20232e, roughness: 0.35, metalness: 0.8 });
     for (const d of route.drones) this.add(d);
@@ -42,7 +42,7 @@ export class Drones {
       lock: new THREE.Vector3(),
     };
     if (d.kind === 'patrol') {
-      o.coneMat = new THREE.MeshBasicMaterial({ color: COL.patrol, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false });
+      o.coneMat = new THREE.MeshBasicMaterial({ color: COL.patrol, transparent: true, opacity: 0.05, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.BackSide, fog: false });
       o.cone = new THREE.Mesh(this.geo.cone, o.coneMat);
       o.cone.rotation.x = 0.16;
       g.add(o.cone);
@@ -104,7 +104,7 @@ export class Drones {
             d.state = 'return'; d.cool = 1.5; this.setColor(d, COL.patrol);
           }
         }
-        if (d.coneMat) d.coneMat.opacity = d.state === 'chase' ? 0.2 : d.state === 'alert' ? 0.26 : 0.1;
+        if (d.coneMat) d.coneMat.opacity = d.state === 'chase' ? 0.1 : d.state === 'alert' ? 0.16 : 0.06;
       } else {
         // ---- sniper ----
         d.yaw += angleDelta(d.yaw, Math.atan2(dx, dz)) * Math.min(1, 4 * dt);

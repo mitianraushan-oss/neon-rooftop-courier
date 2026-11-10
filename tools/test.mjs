@@ -88,6 +88,24 @@ for (const lv of levels) {
     await ctx.close();
   }
 }
+// ---- game over, quality tiers, save data ----
+{
+  const { ctx, page, errors } = await open(desktop, '?level=1&test=1');
+  const st = await page.evaluate(() => { const g = window.__game; g.time = 0.4; g.simulate(2); return g.state; });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: `${OUT}/gameover.png` });
+  if (st !== 'gameover' || !(await page.isVisible('#s-gameover'))) fail('game over screen');
+  await page.click('#bGoRetry');
+  await page.waitForFunction(() => ['intro', 'play'].includes(window.__game.state), null, { timeout: 8000 }).catch(() => fail('retry after game over'));
+  for (const q of [0, 1, 2, 3]) {
+    await page.evaluate((q) => { const g = window.__game; g.gfx.setQuality(String(q)); g.step(1 / 60); g.gfx.render(); }, q);
+    await page.waitForTimeout(250);
+    await page.screenshot({ path: `${OUT}/quality-${q}.png` });
+  }
+  console.log('game over + quality tiers: ' + (errors.length ? 'errors' : 'ok'));
+  if (errors.length) fail('console errors (quality/gameover): ' + errors.join(' | '));
+  await ctx.close();
+}
 await browser.close();
 close();
 console.log(failed ? `\n${failed} FAILURE(S)` : '\nALL TESTS PASSED');

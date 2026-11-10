@@ -242,7 +242,8 @@ export class World {
 
     // ---- wallrun walls ----
     const wallTex = track(stripeTexture('wall', colA, colB));
-    const wallMat = track(new THREE.MeshStandardMaterial({ color: 0x0a0c14, roughness: 0.35, metalness: 0.6, emissive: 0xffffff, emissiveMap: wallTex, emissiveIntensity: 2.0 }));
+    const wallMat = track(new THREE.MeshStandardMaterial({ color: 0x0a0c14, roughness: 0.35, metalness: 0.6, emissive: 0xffffff, emissiveMap: wallTex, emissiveIntensity: 1.0 }));
+    wallTex.repeat.set(3, 1);
     const unit = track(new THREE.BoxGeometry(1, 1, 1));
     const addBox = (b, material, shadow = true) => {
       const m = new THREE.Mesh(unit, material);
@@ -302,7 +303,7 @@ export class World {
 
     // ---- delivery beacons + checkpoints ----
     this.deliveries = [];
-    const beamGeo = track(new THREE.CylinderGeometry(2.6, 2.6, 120, 24, 1, true));
+    const beamGeo = track(new THREE.CylinderGeometry(2.1, 2.1, 120, 24, 1, true));
     const padDGeo = track(new THREE.RingGeometry(2.4, 3.1, 40));
     const cpGeo = track(new THREE.PlaneGeometry(1, 0.35));
     this.checkpoints = [];
@@ -458,7 +459,7 @@ export class World {
       a.mesh.scale.setScalar(1 + a.hot * 0.5);
     }
     for (const d of this.deliveries) {
-      d.beam.material.opacity = d.done ? 0.04 : d.active ? 0.42 + 0.14 * Math.sin(t * 4) : 0.1;
+      d.beam.material.opacity = d.done ? 0.02 : d.active ? 0.2 + 0.07 * Math.sin(t * 4) : 0.06;
       d.ring.rotation.z = t * 0.8;
       d.ring.scale.setScalar(d.done ? 0.6 : 1 + 0.08 * Math.sin(t * 5));
       d.ring.visible = !d.done;

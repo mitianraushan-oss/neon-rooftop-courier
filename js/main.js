@@ -82,6 +82,7 @@ class Game {
     if (params.has('level')) this.startPlay(true);
     else this.toTitle();
     $('boot').classList.add('done');
+    setTimeout(() => $('boot').remove(), 800);
     this.last = performance.now();
     requestAnimationFrame((t) => this.frame(t));
   }
@@ -126,6 +127,9 @@ class Game {
     this.hud.set('levelName', `${cfg.id} / ${cfg.name}`);
     this.hud.boss(cfg.boss ? 0.5 : null);
     this.hud.prompt('');
+    this.hud.countdown('');
+    $('vignette').style.opacity = '';
+    $('vignette').classList.remove('warn', 'on');
     if (this.bot) this.bot.reset();
   }
 
@@ -165,7 +169,7 @@ class Game {
     this.audio.duck(false);
     this.audio.setIntensity(this.cfg.boss ? 0.85 : 0.5);
     if (skipIntro) { this.state = 'play'; this.onGo(); }
-    else { this.state = 'intro'; this.introT = 2.4; this.introN = 4; }
+    else { this.state = 'intro'; this.introT = 1.8; this.introN = 99; }
     this.syncTouch();
   }
   onGo() {
@@ -220,7 +224,7 @@ class Game {
     this.combo++;
     this.comboT = 4.5;
     this.bestCombo = Math.max(this.bestCombo, this.combo);
-    const m = 1 + 0.5 * Math.min(6, Math.floor(this.combo / 5));
+    const m = 1 + 0.5 * Math.min(6, Math.floor(this.combo / 8));
     if (m > this.mult) { this.hud.flash('comboX', 'bump', 260); this.audio.trick(); }
     this.mult = m;
     this.score += Math.round(pts * m);
@@ -303,7 +307,7 @@ class Game {
       const before = Math.ceil(this.introT / 0.6);
       this.introT -= dt;
       const n = Math.ceil(this.introT / 0.6);
-      if (n !== before || this.introN === 4) {
+      if (n !== this.introN) {
         this.introN = n;
         this.hud.countdown(n > 0 ? String(n) : 'GO!');
         this.audio.countdown(n <= 0);
@@ -311,6 +315,7 @@ class Game {
       const s = this.input.poll(dt);
       this.rig.update(dt, pl, this.world, s.lookX, s.lookY);
       pl.syncModel(dt, this.clock);
+      this.hud.update(dt, this);
       if (this.introT <= 0) { this.state = 'play'; this.onGo(); setTimeout(() => this.hud.countdown(''), 700); }
     } else if (st === 'play') {
       if (this.slowT > 0) { this.slowT -= dt; dt *= 0.3; }
