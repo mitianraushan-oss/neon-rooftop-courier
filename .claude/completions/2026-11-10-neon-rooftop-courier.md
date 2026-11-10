@@ -7,4 +7,4 @@ Built a complete static Three.js browser game at the repo root (`index.html`).
 - `node tools/test.mjs`: Playwright end-to-end test; the autopilot completes all 5 levels on
   desktop and mobile viewports with no console errors.
 - Details, decisions and known issues: `notes.md`. Controls and how to run: `README.md`.
-- Not done: no git remote existed, so nothing was pushed / deployed to GitHub Pages.
+- Pushed to github.com/mitianraushan-oss/neon-rooftop-courier and deployed on GitHub Pages (2026-11-11).

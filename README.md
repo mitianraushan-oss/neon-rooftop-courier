@@ -1,5 +1,7 @@
 # Neon Rooftop Courier
 
+**Play:** https://mitianraushan-oss.github.io/neon-rooftop-courier/
+
 A third-person parkour delivery game across a rainy cyberpunk skyline. Run, jump, wall-run,
 slide and grapple between rooftops to drop every package before the clock runs out - then
 outrun WARDEN-9 at dawn.

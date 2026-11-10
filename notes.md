@@ -45,4 +45,5 @@
 - Drones and the boss fly through geometry (no collision for enemies).
 - Wall-run works on the neon billboards only, not on arbitrary building sides.
 - CJK neon signs depend on the device having a Japanese font; otherwise they show boxes.
-- No remote was configured in this repo, so commits are local only (see README for Pages).
+- Deployed: https://mitianraushan-oss.github.io/neon-rooftop-courier/ (GitHub Pages, `main` branch root).
+  The live build was loaded in headless Chromium and the bot cleared level 5 there with no errors.
