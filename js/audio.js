@@ -53,6 +53,7 @@ export class GameAudio {
     // rain bed
     this.rain = this.loop('rain', 'bandpass', 5200, 0.4);
     this.wind = this.loop('wind', 'lowpass', 500, 0.6);
+    this.loop('slide', 'bandpass', 1600, 1.4);
     this.nextTime = ctx.currentTime + 0.1;
     this.timer = setInterval(() => this.schedule(), 40);
   }

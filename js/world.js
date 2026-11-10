@@ -79,7 +79,7 @@ const B_FS_COLOR = `
     // glowing edge band on route roofs so the path reads at a glance
     float ed = min((0.5-abs(vOPos.x))*vScale.x, (0.5-abs(vOPos.z))*vScale.z);
     float band = smoothstep(0.62,0.45,ed)*smoothstep(0.12,0.22,ed);
-    bEmis += uTrimA * band * 1.5 * vInfo.y;
+    bEmis += uTrimA * band * 0.9 * vInfo.y;
   } else if (vONormal.y > -0.5) {
     float u = abs(vONormal.x) > 0.5 ? vWPos.z : vWPos.x;
     vec2 cell = vec2(u/2.6, vWPos.y/3.4);
@@ -91,12 +91,12 @@ const B_FS_COLOR = `
     vec3 wc = r2 < 0.5 ? vec3(1.0,0.62,0.25) : (r2 < 0.74 ? vec3(0.12,0.7,1.0) : (r2 < 0.9 ? vec3(1.0,0.12,0.55) : vec3(0.7,0.85,1.0)));
     float flick = 0.85 + 0.15*sin(uTime*(0.6+r*2.0)+r*40.0);
     float farFade = mix(1.0, 0.55, smoothstep(120.0, 320.0, camD));
-    bEmis += wc * mix(win, 0.42, smoothstep(140.0, 300.0, camD)) * lit * (0.1 + 0.95*r2*r) * flick * farFade;
+    bEmis += wc * mix(win, 0.42, smoothstep(140.0, 300.0, camD)) * lit * (0.06 + 0.6*r2*r) * flick * farFade;
     diffuseColor.rgb = mix(vec3(0.035,0.04,0.055), vec3(0.015,0.02,0.03), win);
     bRough = mix(0.65, 0.12, win);
     float top = vScale.y;
     float trim = smoothstep(top-0.7, top-0.5, vWPos.y);
-    vec3 tc = vInfo.y > 0.5 ? uTrimA*1.5 : (vInfo.z < 0.34 ? uTrimB*1.1 : (vInfo.z > 0.86 ? uTrimA*0.9 : vec3(0.0)));
+    vec3 tc = vInfo.y > 0.5 ? uTrimA*0.9 : (vInfo.z < 0.34 ? uTrimB*1.1 : (vInfo.z > 0.86 ? uTrimA*0.9 : vec3(0.0)));
     bEmis += tc * trim;
     // faint vertical neon seams on some towers
     float seam = step(0.9, vInfo.z) * smoothstep(0.46,0.5,abs(fract(u/vScale.x*0.0+u*0.12)-0.5));

@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 // top/horizon at level start -> top2/horizon2 at level end (the sky drifts as you progress).
 export const SKIES = [
-  { name: 'dusk', top: 0x1b1147, hor: 0xff7a45, top2: 0x0d0a2c, hor2: 0xc2357a, glow: 0xff4fa0, fog: 0x3b2150, fogD: 0.0048,
+  { name: 'dusk', top: 0x120a36, hor: 0xb0452e, top2: 0x08061e, hor2: 0x7a2060, glow: 0xff4fa0, fog: 0x2a1640, fogD: 0.0042,
     light: 0xffb38a, lightI: 1.5, sun: 0.9, trimA: 0x19f0ff, trimB: 0xff3fa4, stars: 0.3 },
   { name: 'night', top: 0x04050f, hor: 0x12306a, top2: 0x05040f, hor2: 0x2a1a6a, glow: 0x2de2ff, fog: 0x0b1530, fogD: 0.0052,
     light: 0x9fb8ff, lightI: 1.2, sun: 0, trimA: 0xff2fd0, trimB: 0x2de2ff, stars: 1 },
@@ -150,13 +150,13 @@ export class Env {
     this.skyMat.uniforms.uGlow.value.set(s.glow);
     this.skyMat.uniforms.uStars.value = s.stars;
     this.skyMat.uniforms.uSun.value = s.sun;
-    this.scene.fog.color.set(s.fog).multiplyScalar(0.62);
+    this.scene.fog.color.set(s.fog).multiplyScalar(0.5);
     this.scene.fog.density = s.fogD;
     this.sun.color.set(s.light);
     this.sun.intensity = s.lightI;
     this.hemi.color.set(s.top).lerp(new THREE.Color(s.glow), 0.3).multiplyScalar(1.3);
     this.hemi.groundColor.set(s.fog);
-    this.hemi.intensity = 0.7;
+    this.hemi.intensity = 0.4;
     // dawn levels are lit from the low sun, others from the moon
     if (s.sun > 0.6) this.lightDir.set(0.25, 0.42, 0.87).normalize();
     else this.lightDir.set(-0.45, 0.62, 0.64).normalize();
@@ -193,7 +193,7 @@ export class Env {
     if (this.envRT) this.envRT.dispose();
     this.envRT = this.pmrem.fromScene(es, 0.02, 1, 300);
     this.scene.environment = this.envRT.texture;
-    this.scene.environmentIntensity = 0.6;
+    this.scene.environmentIntensity = 0.42;
     es.traverse((o) => { if (o.isMesh && o !== dome) { o.geometry.dispose(); o.material.dispose(); } });
     dome.geometry.dispose();
   }
@@ -227,10 +227,10 @@ export class Env {
       this.flash = Math.max(0, this.flash - dt * 2.2);
       const f = this.flash * (0.6 + 0.4 * Math.sin(this.time * 70));
       u.uFlash.value = f;
-      this.hemi.intensity = 0.7 + f * 3;
+      this.hemi.intensity = 0.4 + f * 3;
     } else if (u.uFlash.value !== 0) {
       u.uFlash.value = 0;
-      this.hemi.intensity = 0.7;
+      this.hemi.intensity = 0.4;
     }
   }
 }

@@ -18,7 +18,7 @@ export class Gfx {
     this.canvas = canvas;
     const r = (this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance', stencil: false }));
     r.toneMapping = THREE.ACESFilmicToneMapping;
-    r.toneMappingExposure = 1.25;
+    r.toneMappingExposure = 1.1;
     r.shadowMap.enabled = true;
     r.shadowMap.type = THREE.PCFSoftShadowMap;
     this.scene = new THREE.Scene();
@@ -40,7 +40,7 @@ export class Gfx {
       const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: q.msaa });
       this.composer = new EffectComposer(this.renderer, rt);
       this.composer.addPass(new RenderPass(this.scene, this.camera));
-      this.bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.62, 0.7, 0.92);
+      this.bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.42, 0.5, 1.0);
       this.composer.addPass(this.bloom);
       this.composer.addPass(new OutputPass());
     }

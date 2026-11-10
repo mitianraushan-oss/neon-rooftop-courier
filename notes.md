@@ -18,10 +18,19 @@
 
 ## Progress
 - [x] M1 - title screen over a live city (sky, rain, bloom, menus, settings, save data)
-- [ ] M2 - player controller, camera, collision, level 1 playable
-- [ ] M3 - deliveries, HUD, pickups, checkpoints, levels 1-4, autopilot test bot
-- [ ] M4 - drones, boss chase, level 5
+- [x] M2 - player controller (coyote, buffer, slide, wall-run, grapple, mantle), camera, collision
+- [x] M3 - deliveries, HUD, minimap, pickups, checkpoints, 5 levels, autopilot bot + Playwright test
+- [x] M4 - patrol + sniper drones, WARDEN-9 boss chase
 - [ ] M5 - touch + gamepad, adaptive quality, juice pass, README
 
+## Testing
+- `node tools/test.mjs` drives headless Chromium: menus on desktop / mobile landscape /
+  mobile portrait, then every level is played to completion by `js/bot.js`, which feeds the
+  same input struct as a human. `?level=N&bot=1` lets you watch it. `?test=1` hands the
+  simulation clock to the test (`__game.simulate(seconds)`).
+- Bugs the bot found and that were fixed: wall-run only attached on a hard collision (now
+  proximity based, billboards only); billboard walls could sit across the arrival lane (walls
+  now always run parallel to the way you arrive); special links chained back to back.
+
 ## Known issues
-- Menu buttons other than Settings/How to play do nothing yet (M2).
+- Visual tuning and time budgets still rough (M5).

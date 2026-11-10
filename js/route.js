@@ -57,7 +57,8 @@ export function generateRoute(cfg) {
   for (let i = 1; i < N; i++) {
     const prev = plats[i - 1];
     let type = (cfg.script && cfg.script[i]) || weighted(R, cfg.weights);
-    if (!(cfg.script && cfg.script[i]) && type !== 'jump' && type === lastType) type = 'jump';
+    // after a special link always give a plain jump: time to breathe and re-aim
+    if (!(cfg.script && cfg.script[i]) && type !== 'jump' && lastType !== 'jump') type = 'jump';
     const isDelivery = deliverySet.has(i);
     let made = null;
 
@@ -71,6 +72,8 @@ export function generateRoute(cfg) {
         dir = r < 0.56 ? DIRS[0] : r < 0.78 ? DIRS[1] : DIRS[2];
         if (lastDir.x !== 0 && dir.x === -lastDir.x) dir = DIRS[0];
       }
+      // a billboard wall must run parallel to the way you arrive, never across it
+      if (type === 'wallrun') dir = prev.inDir;
       const a = dir.x !== 0 ? 'x' : 'z';
       const b = a === 'x' ? 'z' : 'x';
       const sgn = a === 'x' ? dir.x : dir.z;
