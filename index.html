@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#05060f">
+<title>Neon Rooftop Courier</title>
+<meta name="description" content="Third-person parkour delivery game across a rainy cyberpunk skyline. Run, wall-run, slide and grapple.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2305060f'/%3E%3Cpath d='M6 24 16 6l10 18-10-5z' fill='%2319f0ff'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{ "imports": { "three": "./vendor/three/three.module.min.js", "three/addons/": "./vendor/three/addons/" } }
+</script>
+</head>
+<body>
+<canvas id="game"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="hud-tl">
+    <div class="score-line"><span class="lbl">SCORE</span><span id="score">0</span></div>
+    <div id="combo" class="combo"><span id="comboX">x1</span><div class="combo-bar"><i id="comboFill"></i></div><span id="comboName"></span></div>
+    <div class="deliv"><span class="lbl">DROPS</span><span id="deliv">0/3</span><span class="lbl sh">SHARDS</span><span id="shards">0</span></div>
+  </div>
+  <div class="hud-tc">
+    <div id="timer">0:00.0</div>
+    <div id="levelName"></div>
+    <div id="bossbar" class="hidden"><span>WARDEN-9</span><div><i id="bossFill"></i></div></div>
+  </div>
+  <div class="hud-tr">
+    <canvas id="minimap" width="168" height="168"></canvas>
+    <button id="btnPause" class="icon-btn" aria-label="Pause">II</button>
+  </div>
+  <div id="arrow"><i></i><span id="arrowDist"></span></div>
+  <div id="prompt" class="hidden"></div>
+  <div id="toast"></div>
+  <div id="hint"></div>
+  <div id="countdown"></div>
+  <div id="vignette"></div>
+  <div id="speed"></div>
+</div>
+
+<div id="touch" class="hidden">
+  <div id="stick"><i id="knob"></i></div>
+  <button class="tbtn" id="tJump" data-act="jump">JUMP</button>
+  <button class="tbtn" id="tSlide" data-act="slide">SLIDE</button>
+  <button class="tbtn" id="tGrap" data-act="grapple">HOOK</button>
+</div>
+
+<div id="screens">
+  <section id="s-title" class="screen">
+    <div class="logo">
+      <div class="logo-sm">NIGHT SHIFT DISPATCH PRESENTS</div>
+      <h1><span class="l1">NEON</span><span class="l2">ROOFTOP</span><span class="l3">COURIER</span></h1>
+      <div class="tag">run &middot; wall-run &middot; slide &middot; grapple &middot; deliver</div>
+    </div>
+    <nav class="menu">
+      <button id="bPlay" class="btn primary">START SHIFT</button>
+      <button id="bLevels" class="btn">LEVEL SELECT</button>
+      <button id="bHelp" class="btn">HOW TO PLAY</button>
+      <button id="bSettings" class="btn">SETTINGS</button>
+    </nav>
+    <div class="best" id="titleBest"></div>
+    <div class="foot">Best with headphones &middot; all graphics and audio are generated in your browser</div>
+  </section>
+
+  <section id="s-levels" class="screen hidden">
+    <h2>SELECT DISTRICT</h2>
+    <div id="levelGrid" class="grid"></div>
+    <button class="btn back" data-back>BACK</button>
+  </section>
+
+  <section id="s-help" class="screen hidden">
+    <h2>HOW TO PLAY</h2>
+    <div class="help">
+      <div class="col">
+        <h3>KEYBOARD + MOUSE</h3>
+        <p><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp; <kbd>Mouse</kbd> look</p>
+        <p><kbd>Space</kbd> jump / wall-jump &nbsp; <kbd>Shift</kbd> slide</p>
+        <p><kbd>E</kbd> or <kbd>Click</kbd> grapple &nbsp; <kbd>Esc</kbd> pause</p>
+        <h3>TOUCH</h3>
+        <p>Left thumb: stick. Right thumb: drag to look, tap the buttons.</p>
+        <h3>GAMEPAD</h3>
+        <p>Sticks move/look &middot; A jump &middot; B / RT slide &middot; X / LT hook &middot; Start pause</p>
+      </div>
+      <div class="col">
+        <h3>THE JOB</h3>
+        <p>Follow the arrow to each <b class="g">green beacon</b> and drop a package before the clock hits zero. Every drop adds time.</p>
+        <p><b class="c">Glowing billboards</b> can be wall-run. <b class="y">Striped ducts</b> must be slid under. <b class="y">Hover buoys</b> can be grappled. <b class="m">Launch pads</b> throw you across big gaps.</p>
+        <p>Chain shards and tricks to grow your combo multiplier. Drones and falls cost seconds - time is your health.</p>
+        <p>There is a lucky cat hidden in every district.</p>
+      </div>
+    </div>
+    <button class="btn back" data-back>BACK</button>
+  </section>
+
+  <section id="s-settings" class="screen hidden">
+    <h2>SETTINGS</h2>
+    <div class="settings">
+      <label>GRAPHICS<select id="setQuality"><option value="auto">Auto (adaptive)</option><option value="0">Low</option><option value="1">Medium</option><option value="2">High</option><option value="3">Ultra</option></select></label>
+      <label>VOLUME<input id="setVolume" type="range" min="0" max="100"></label>
+      <label>MUSIC<select id="setMusic"><option value="1">On</option><option value="0">Off</option></select></label>
+      <label>LOOK SENSITIVITY<input id="setSens" type="range" min="20" max="200"></label>
+      <label>INVERT Y<select id="setInvert"><option value="0">Off</option><option value="1">On</option></select></label>
+      <label>CAMERA SHAKE<select id="setShake"><option value="1">On</option><option value="0">Off</option></select></label>
+      <button id="bReset" class="btn small danger">RESET SAVE DATA</button>
+    </div>
+    <button class="btn back" data-back>BACK</button>
+  </section>
+
+  <section id="s-pause" class="screen dim hidden">
+    <h2>PAUSED</h2>
+    <nav class="menu">
+      <button id="bResume" class="btn primary">RESUME</button>
+      <button id="bRestart" class="btn">RESTART LEVEL</button>
+      <button id="bPSettings" class="btn">SETTINGS</button>
+      <button id="bQuit" class="btn">QUIT TO TITLE</button>
+    </nav>
+  </section>
+
+  <section id="s-complete" class="screen dim hidden">
+    <div class="kicker" id="cKicker">DISTRICT CLEARED</div>
+    <h2 id="cTitle">FIRST SHIFT</h2>
+    <div class="stars" id="cStars"><i></i><i></i><i></i></div>
+    <table class="tally" id="cTally"></table>
+    <div class="total"><span>TOTAL</span><b id="cTotal">0</b></div>
+    <div class="newbest hidden" id="cBest">NEW BEST!</div>
+    <nav class="menu row">
+      <button id="bNext" class="btn primary">NEXT DISTRICT</button>
+      <button id="bRetry" class="btn">REPLAY</button>
+      <button id="bCMenu" class="btn">MENU</button>
+    </nav>
+  </section>
+
+  <section id="s-gameover" class="screen dim hidden">
+    <div class="kicker red">PACKAGE LATE</div>
+    <h2 class="red">SHIFT OVER</h2>
+    <p id="goText" class="sub"></p>
+    <nav class="menu">
+      <button id="bGoRetry" class="btn primary">TRY AGAIN</button>
+      <button id="bGoMenu" class="btn">MENU</button>
+    </nav>
+  </section>
+
+  <section id="s-win" class="screen dim hidden">
+    <div class="kicker">WARDEN-9 OFFLINE</div>
+    <h2 class="gold">THE CITY IS YOURS</h2>
+    <p class="sub">Sunrise over Dawn Terminus. Every package delivered. Dispatch says take tomorrow off.</p>
+    <table class="tally" id="wTally"></table>
+    <div class="total"><span>CAREER SCORE</span><b id="wTotal">0</b></div>
+    <nav class="menu row">
+      <button id="bWLevels" class="btn primary">LEVEL SELECT</button>
+      <button id="bWMenu" class="btn">TITLE</button>
+    </nav>
+  </section>
+</div>
+<div id="fade"></div>
+<div id="boot">LOADING CITY&hellip;</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
